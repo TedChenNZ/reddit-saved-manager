@@ -33,7 +33,7 @@ module.exports = {
   entry: {
     main: './src/index.js',
   },
-  devtool: 'inline-source-map',
+  devtool: devMode ? 'inline-source-map' : '',
   devServer: {
     contentBase: './dist',
     hot: true,
