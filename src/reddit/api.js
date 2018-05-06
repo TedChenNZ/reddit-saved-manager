@@ -3,7 +3,7 @@ import queryString from 'query-string';
 import { USER_AGENT, URI } from './constants';
 
 export const getRequest = (token, url, options = {}) =>
-  fetch(`${url}?${queryString.stringify(options)}`, {
+  fetch(`${url}${options ? `?${queryString.stringify(options)}` : ''}`, {
     method: 'GET',
     headers: {
       Authorization: `bearer ${token}`,

@@ -5,31 +5,43 @@ import Header from './header';
 import Login from '../Login';
 import styles from './styles.scss';
 
-import { getAccessToken, refreshAccessToken } from '../reddit/auth';
+import { getAccessToken } from '../reddit/auth';
 import { getRequest, URLS } from '../reddit/api';
+import { saveAuth, saveUser, loadAuthAndUser } from '../reddit/session';
 
 export default class App extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      accessToken: null,
+      access_token: null,
     };
   }
   componentWillMount() {
-    const resp = queryString.parse(window.location.search);
-    if (resp && resp.code) {
-      getAccessToken(resp.code)
-        .then((r) => {
-          this.setState(r);
-          return r;
+    const authResponse = queryString.parse(window.location.search);
+
+    const getSaved = () => {
+      const fetch = curry(getRequest)(this.state.access_token);
+      fetch(URLS.saved(this.state.name), { limit: 1 })
+        .then(console.log);
+    };
+
+    if (authResponse && authResponse.code) {
+      getAccessToken(authResponse.code)
+        .then(saveAuth)
+        .then((data) => {
+          this.setState(data);
+          return data;
         })
-        .then((r) => {
-          refreshAccessToken(r.refresh_token).then(console.log);
+        .then(data => Promise.all([getRequest(data.access_token, URLS.me())]))
+        .then(data => data[0])
+        .then(saveUser)
+        .then((data) => {
+          this.setState(data);
+          return data;
         })
-        .then((r) => {
-          const fetch = curry(getRequest)(this.state.access_token);
-          fetch(URLS.saved(''), { limit: 1 }).then(console.log);
-        });
+        .then(getSaved);
+    } else {
+      this.setState(loadAuthAndUser(), getSaved);
     }
   }
 
@@ -37,7 +49,7 @@ export default class App extends PureComponent {
     return (
       <div className={styles.app}>
         <Header />
-        {!this.state.accessToken && <Login />}
+        {!this.state.access_token && <Login />}
       </div>
     );
   }

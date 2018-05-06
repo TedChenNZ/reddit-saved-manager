@@ -9,7 +9,7 @@ export const authUrl = (state = 'abc') => `https://www.reddit.com/api/v1/authori
   response_type: 'code',
   state,
   duration: 'permanent',
-  scope: 'save,history',
+  scope: 'save,history,identity',
   redirect_uri: REDIRECT_URI,
 }, { encode: false })}`;
 
@@ -45,4 +45,3 @@ export const refreshAccessToken = refreshToken =>
     }, { encode: false }),
   })
     .then(resp => resp.json());
-
