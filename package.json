@@ -1,9 +1,9 @@
 {
-  "name": "boilerplate",
+  "name": "reddt-saved-manager",
   "version": "0.0.0",
-  "description": "react boilerplate",
+  "description": "reddt-saved-manager",
   "main": "src/index.js",
-  "repository": "git@github.com:TedChenNZ/boilerplate.git",
+  "repository": "git@github.com:TedChenNZ/reddt-saved-manager.git",
   "author": "Ted Chen <ted.chen@eroad.com>",
   "license": "MIT",
   "private": false,
