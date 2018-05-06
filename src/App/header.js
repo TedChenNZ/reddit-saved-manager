@@ -12,7 +12,7 @@ Header.propTypes = {
 };
 
 Header.defaultProps = {
-  title: 'Hello World',
+  title: 'Reddit Saved Manager',
 };
 
 export default Header;
