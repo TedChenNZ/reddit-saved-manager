@@ -2,6 +2,7 @@ import 'isomorphic-fetch';
 import queryString from 'query-string';
 import { USER_AGENT, URI } from './constants';
 
+// TODO: sometimes need to do a refresh?
 export const getRequest = (token, url, options = {}) =>
   fetch(`${url}${options ? `?${queryString.stringify(options)}` : ''}`, {
     method: 'GET',

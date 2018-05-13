@@ -1,17 +1,39 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { inject, observer } from 'mobx-react';
 
-import { Button } from 'react-toolbox';
-import { authUrl } from '../reddit/auth';
+import queryString from 'query-string';
+import Login from './Login';
+import User from './User';
 
-const Login = props => (
-  <div>
-    <a href={authUrl()}>
-      <Button>Login</Button>
-    </a>
-  </div>
-);
+export class LoginWrapper extends Component {
+  static propTypes = {
+    authStore: PropTypes.shape({
+      name: PropTypes.string,
+      fetchLogin: PropTypes.func,
+    }).isRequired,
+  }
 
-Login.propTypes = {};
+  componentWillMount() {
+    if (!this.props.authStore.name) {
+      const authResponse = queryString.parse(window.location.search);
+      if (authResponse && authResponse.code) {
+        this.props.authStore.fetchLogin(authResponse.code);
+      }
+    }
+  }
 
-export default Login;
+  render() {
+    const { name } = this.props.authStore;
+    if (!name) {
+      return (
+        <Login />
+      );
+    }
+    return (
+      <User name={name} />
+    );
+  }
+}
+
+export default inject('authStore')(observer(LoginWrapper));

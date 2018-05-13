@@ -9,6 +9,8 @@
   "private": false,
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.46",
+    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.46",
+    "@babel/plugin-proposal-decorators": "^7.0.0-beta.46",
     "@babel/preset-env": "^7.0.0-beta.46",
     "@babel/preset-stage-3": "^7.0.0-beta.46",
     "babel-eslint": "^8.2.3",
@@ -37,6 +39,8 @@
   },
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
+    "mobx": "^4.2.1",
+    "mobx-react": "^5.1.2",
     "prop-types": "^15.6.1",
     "query-string": "^6.1.0",
     "ramda": "^0.25.0",

@@ -1,56 +1,23 @@
-import React, { PureComponent } from 'react';
-import queryString from 'query-string';
-import { curry } from 'ramda';
+import React from 'react';
+import { Provider } from 'mobx-react';
 import Header from './header';
 import Login from '../Login';
 import styles from './styles.scss';
 
-import { getAccessToken } from '../reddit/auth';
-import { getRequest, URLS } from '../reddit/api';
-import { saveAuth, saveUser, loadAuthAndUser } from '../reddit/session';
+import { UI, Auth, Posts } from '../stores';
 
-export default class App extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      access_token: null,
-    };
-  }
-  componentWillMount() {
-    const authResponse = queryString.parse(window.location.search);
+const uiStore = new UI();
+const authStore = new Auth();
+const postsStore = new Posts();
 
-    const getSaved = () => {
-      const fetch = curry(getRequest)(this.state.access_token);
-      fetch(URLS.saved(this.state.name), { limit: 1 })
-        .then(console.log);
-    };
+const App = () => (
+  <Provider uiStore={uiStore} authStore={authStore} posts={postsStore}>
+    <div className={styles.app}>
+      <Header>
+        <Login />
+      </Header>
+    </div>
+  </Provider>
+);
 
-    if (authResponse && authResponse.code) {
-      getAccessToken(authResponse.code)
-        .then(saveAuth)
-        .then((data) => {
-          this.setState(data);
-          return data;
-        })
-        .then(data => Promise.all([getRequest(data.access_token, URLS.me())]))
-        .then(data => data[0])
-        .then(saveUser)
-        .then((data) => {
-          this.setState(data);
-          return data;
-        })
-        .then(getSaved);
-    } else {
-      this.setState(loadAuthAndUser(), getSaved);
-    }
-  }
-
-  render() {
-    return (
-      <div className={styles.app}>
-        <Header />
-        {!this.state.access_token && <Login />}
-      </div>
-    );
-  }
-}
+export default App;
