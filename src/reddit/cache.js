@@ -27,3 +27,13 @@ export const loadAuthAndUser = () => {
   });
   return data;
 };
+
+const cache = {
+  save,
+  load,
+  saveAuth,
+  saveUser,
+  loadAuthAndUser,
+};
+
+export default cache;

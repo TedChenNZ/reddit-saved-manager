@@ -1,32 +1,34 @@
-/* eslint-disable camelcase */
-// To keep vars consistent with api
-
 import { observable, decorate, action } from 'mobx';
-import { fetchAuthTokens } from '../reddit/auth';
-import { saveAuth, saveUser, loadAuthAndUser } from '../reddit/session';
-import { getRequest, URLS } from '../reddit/api';
 
-
-// TODO: Uncouple session
 export default class Auth {
+  rootStore;
+  api;
+  cache;
+  get;
   access_token;
   refresh_token;
   expires_at;
   name;
 
-  constructor() {
-    const data = loadAuthAndUser();
+  constructor(rootStore, props) {
+    this.rootStore = rootStore;
+    Object.assign(this, props());
+    const data = this.cache.loadAuthAndUser();
     this.setAuthTokens(data);
     this.setUserDetails(data);
   }
 
-  fetchLogin = code => fetchAuthTokens(code)
-    .then(saveAuth)
-    .then(this.setAuthTokens)
-    .then(data => Promise.all([getRequest(data.access_token, URLS.me())]))
-    .then(data => data[0])
-    .then(saveUser)
-    .then(this.setUserDetails)
+  fetchAuth = code => this.api.fetchAuthTokens(code)
+    .then(this.cache.saveAuth)
+    .then(this.setAuthTokens);
+
+  fetchUser = () => this.get()(this.api.URLS.me())
+    .then(x => x[0])
+    .then(this.cache.saveUser)
+    .then(this.setUserDetails);
+
+  fetchLogin = code => this.fetchAuth(code)
+    .then(this.fetchUser);
 
   setAuthTokens = (data) => {
     this.access_token = data.access_token;
@@ -48,7 +50,6 @@ decorate(Auth, {
   refresh_token: observable,
   expires_at: observable,
   name: observable,
-  fetchLogin: action,
   setAuthTokens: action,
   setUserDetails: action,
 });

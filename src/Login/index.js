@@ -36,4 +36,4 @@ export class LoginWrapper extends Component {
   }
 }
 
-export default inject('authStore')(observer(LoginWrapper));
+export default inject(stores => ({ authStore: stores.store.authStore }))(observer(LoginWrapper));

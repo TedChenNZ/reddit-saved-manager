@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Button } from 'react-toolbox';
-import { authUrl } from '../reddit/auth';
+import { authUrl } from '../reddit/api';
 
 const Login = () => (
   <div>

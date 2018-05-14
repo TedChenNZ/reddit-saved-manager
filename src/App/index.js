@@ -4,18 +4,20 @@ import Header from './header';
 import Login from '../Login';
 import styles from './styles.scss';
 
-import { UI, Auth, Posts } from '../stores';
+import RootStore from '../stores';
+import Posts from '../Posts';
+import cache from '../reddit/cache';
+import api from '../reddit/api';
 
-const uiStore = new UI();
-const authStore = new Auth();
-const postsStore = new Posts();
+const store = new RootStore(api, cache);
 
 const App = () => (
-  <Provider uiStore={uiStore} authStore={authStore} posts={postsStore}>
+  <Provider store={store}>
     <div className={styles.app}>
       <Header>
         <Login />
       </Header>
+      <Posts name={store.authStore.name} />
     </div>
   </Provider>
 );
